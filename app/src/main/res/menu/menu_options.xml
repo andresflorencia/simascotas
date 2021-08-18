@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/option_descargaproductos"
+        android:title="Descargar Productos"
+        app:showAsAction="never" />
+    <item android:id="@+id/option_sincronizaclientes"
+        android:title="Sincronizar Datos"
+        app:showAsAction="never" />
+    <item android:id="@+id/option_sincronizacomprobantes"
+        android:title="Sincronizar Facturas"
+        app:showAsAction="never" />
+    <item android:id="@+id/option_sincronizapedidos"
+        android:title="Sincronizar Pedidos Cliente"
+        app:showAsAction="never" />
+    <item android:id="@+id/option_sincronizapedidos_inv"
+        android:title="Sincronizar Pedidos Inventario"
+        app:showAsAction="never" />
+</menu>

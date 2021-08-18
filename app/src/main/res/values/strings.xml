@@ -1,0 +1,543 @@
+<resources>
+    <string name="app_name">SI Mascotas</string>
+
+    <string name="lblLogin">Inicio de Sesión</string>
+    <string name="lblConfirmePin">Confirme Pin</string>
+    <string name="lblIngresePin">Ingrese Nuevo Pin</string>
+    <string name="lblBlancoLogin">   </string>
+    <string name="GPSAlertDialogTitle">Configuración GPS</string>
+    <string name="GPSAlertDialogMessage">Por favor active los servicios de Ubicación</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="dbUsuario">
+        CREATE TABLE IF NOT EXISTS usuario(
+            idusuario integer primary key,
+            razonsocial varchar(128),
+            usuario varchar(50),
+            clave varchar(128),
+            autorizacion integer,
+            pin varchar(4),
+            perfil integer,
+            sucursalid integer,
+            CONSTRAINT usuario_pin UNIQUE(idusuario,pin)
+        );
+        ALTER TABLE usuario ADD COLUMN parroquiaid integer DEFAULT 0;
+        ALTER TABLE usuario ADD COLUMN nombreperfil varchar(50) DEFAULT \'\';
+    </string>
+
+    <string name="dbSucursal">
+        CREATE TABLE IF NOT EXISTS sucursal(
+            idsucursal varchar(20) primary key,
+            ruc varchar(20),
+            razonsocial varchar(128),
+            nombrecomercial varchar(128),
+            nombresucursal varchar(128),
+            direccion varchar(128),
+            codigoestablecimiento varchar(3),
+            puntoemision varchar(3),
+            ambiente integer,
+            sucursalpadreid varchar(20),
+            idestablecimiento integer
+        );
+        ALTER TABLE sucursal ADD COLUMN idpuntoemision integer DEFAULT 0;
+        ALTER TABLE sucursal ADD COLUMN periodo integer DEFAULT 0;
+        ALTER TABLE sucursal ADD COLUMN mesactual integer DEFAULT 0;
+    </string>
+
+    <string name="dbSecuencial">
+        CREATE TABLE IF NOT EXISTS secuencial (
+            sucursalid varchar(20),
+            tipocomprobante varchar(2),
+            codigoestablecimiento varchar(3),
+            puntoemision varchar(3),
+            secuencial integer,
+            constraint pksecuencial primary key (sucursalid, tipocomprobante, codigoestablecimiento, puntoemision)
+        );
+    </string>
+
+    <string name="dbProducto">
+        CREATE TABLE IF NOT EXISTS producto(
+            idproducto integer PRIMARY KEY,
+            codigoproducto varchar(100),
+            nombreproducto varchar(250),
+            pvp double,
+            unidadid integer,
+            unidadesporcaja integer,
+            iva integer,
+            ice integer,
+            factorconversion double,
+            pvp1 double,
+            pvp2 double,
+            pvp3 double,
+            pvp4 double,
+            pvp5 double,
+            stock double,
+            porcentajeiva double
+        );
+        ALTER TABLE producto ADD COLUMN establecimientoid INTEGER DEFAULT 0;
+        ALTER TABLE producto ADD COLUMN tipo VARCHAR(5) DEFAULT \'P\';
+        ALTER TABLE producto ADD COLUMN clasificacionid INTEGER DEFAULT 0;
+        ALTER TABLE producto ADD COLUMN nombreclasificacion VARCHAR(50) DEFAULT \'Sin clasificación\';
+    </string>
+
+    <string name="dbCliente">
+        CREATE TABLE IF NOT EXISTS cliente(
+            idcliente INTEGER PRIMARY KEY AUTOINCREMENT,
+            tiponip varchar(2),
+            nip varchar(20),
+            razonsocial varchar(200),
+            nombrecomercial varchar(200),
+            direccion text,
+            lat double,
+            lon double,
+            categoria varchar(1),
+            usuarioid integer,
+            fono1 varchar(20),
+            fono2 varchar(20),
+            email varchar(100),
+            observacion text,
+            ruc varchar(20),
+            codigosistema integer,
+            actualizado integer,
+            CONSTRAINT uknip UNIQUE(nip, usuarioid)
+        );
+        ALTER TABLE cliente ADD COLUMN establecimientoid INTEGER DEFAULT 0;
+        ALTER TABLE cliente ADD COLUMN parroquiaid INTEGER DEFAULT 0;
+        ALTER TABLE cliente ADD COLUMN fecharegistro VARCHAR(25) DEFAULT \'\';
+        ALTER TABLE cliente ADD COLUMN fechamodificacion VARCHAR(25) DEFAULT \'\';
+        ALTER TABLE cliente ADD COLUMN longdater INTEGER DEFAULT 0;
+        ALTER TABLE cliente ADD COLUMN longdatem INTEGER DEFAULT 0;
+        ALTER TABLE cliente ADD COLUMN nombrecategoria VARCHAR(100) DEFAULT \'\';
+    </string>
+
+    <string name="dbLote">
+        CREATE TABLE IF NOT EXISTS lote (
+            productoid INTEGER,
+            numerolote VARCHAR(150),
+            stock DOUBLE,
+            preciocosto DOUBLE,
+            fechavencimiento varchar(15)
+        );
+        ALTER TABLE lote ADD COLUMN longdate INTEGER DEFAULT 0;
+        ALTER TABLE lote ADD COLUMN establecimientoid INTEGER DEFAULT 0;
+    </string>
+
+    <string name="dbComprobante">
+        CREATE TABLE IF NOT EXISTS comprobante(
+            idcomprobante INTEGER PRIMARY KEY AUTOINCREMENT,
+            establecimientoid INTEGER,
+            clienteid INTEGER,
+            usuarioid INTEGER,
+            codigosistema INTEGER DEFAULT 0,
+            codigotransaccion VARCHAR(25),
+            tipotransaccion VARCHAR(2),
+            fechacelular VARCHAR(20),
+            fechadocumento VARCHAR(20),
+            observacion TEXT,
+            subtotal DOUBLE,
+            subtotaliva DOUBLE,
+            descuento DOUBLE,
+            porcentajeiva DOUBLE,
+            total DOUBLE,
+            estado INTEGER,
+            lat DOUBLE,
+            lon DOUBLE,
+            claveacceso VARCHAR(49),
+            secuencial INTEGER DEFAULT 0,
+            nip VARCHAR(20),
+            CONSTRAINT ukautorizacion UNIQUE(claveacceso)
+        );
+        ALTER TABLE comprobante ADD COLUMN sucursalenvia TEXT DEFAULT \'\';
+        ALTER TABLE comprobante ADD COLUMN sucursalrecibe TEXT DEFAULT \'\';
+        ALTER TABLE comprobante ADD COLUMN longdate INTEGER DEFAULT 0;
+    </string>
+
+    <string name="dbDetalleComprobante">
+        CREATE TABLE IF NOT EXISTS detallecomprobante(
+            comprobanteid INTEGER,
+            linea INTEGER,
+            productoid INTEGER,
+            cantidad DOUBLE,
+            total DOUBLE,
+            precio DOUBLE,
+            numerolote VARCHAR(30),
+            fechavencimiento VARCHAR(20),
+            stock DOUBLE,
+            preciocosto DOUBLE
+        );
+        ALTER TABLE detallecomprobante ADD COLUMN precioreferencia DOUBLE DEFAULT 0;
+        ALTER TABLE detallecomprobante ADD COLUMN valoriva DOUBLE DEFAULT 0;
+        ALTER TABLE detallecomprobante ADD COLUMN valorice DOUBLE DEFAULT 0;
+        ALTER TABLE detallecomprobante ADD COLUMN descuento DOUBLE DEFAULT 0;
+        ALTER TABLE detallecomprobante ADD COLUMN codigoproducto VARCHAR(100) DEFAULT \'\';
+        ALTER TABLE detallecomprobante ADD COLUMN nombreproducto VARCHAR(250) DEFAULT \'\';
+        ALTER TABLE detallecomprobante ADD COLUMN marquetas DOUBLE DEFAULT 0;
+    </string>
+
+    <string name="dbPedido">
+        CREATE TABLE IF NOT EXISTS pedido(
+            idpedido INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigosistema INTEGER,
+            clienteid INTEGER,
+            estado INTEGER,
+            usuarioid INTEGER,
+            parroquiaid INTEGER,
+            establecimientoid INTEGER,
+            secuencial INTEGER,
+            fechapedido VARCHAR(20),
+            fechacelular VARCHAR(20),
+            observacion TEXT,
+            categoria VARCHAR(2),
+            secuencialpedido VARCHAR(25),
+            nip VARCHAR(20),
+            total DOUBLE,
+            subtotal DOUBLE,
+            subtotaliva DOUBLE,
+            porcentajeiva DOUBLE,
+            descuento DOUBLE,
+            lat DOUBLE,
+            lon DOUBLE,
+            codigoestablecimiento VARCHAR(5),
+            puntoemision VARCHAR(5),
+            tipotransaccion VARCHAR(2),
+            CONSTRAINT uksecuencial UNIQUE(usuarioid, clienteid, secuencialpedido)
+        );
+        ALTER TABLE pedido ADD COLUMN longdate INTEGER DEFAULT 0;
+        ALTER TABLE pedido ADD COLUMN secuencialsistema VARCHAR(20) DEFAULT \'\';
+    </string>
+    <string name="dbDetallePedido">
+        CREATE TABLE IF NOT EXISTS detallepedido(
+            pedidoid INTEGER,
+            orden INTEGER,
+            cantidad DOUBLE,
+            factorconversion DOUBLE,
+            precio DOUBLE,
+            idproducto INTEGER,
+            observacion TEXT,
+            usuarioid INTEGER
+        );
+        ALTER TABLE detallepedido ADD COLUMN porcentajeiva DOUBLE DEFAULT 0;
+        ALTER TABLE detallepedido ADD COLUMN codigoproducto  VARCHAR(150) DEFAULT \'\';
+        ALTER TABLE detallepedido ADD COLUMN nombreproducto  VARCHAR(250) DEFAULT \'\';
+    </string>
+
+    <string name="dbPermiso">
+        CREATE TABLE IF NOT EXISTS permiso(
+            nombreopcion VARCHAR(150),
+            perfilid INTEGER,
+            opcionid INTEGER,
+            permisoescritura VARCHAR(10),
+            permisoimpresion VARCHAR(10),
+            permisomodificacion VARCHAR(10),
+            permisoborrar VARCHAR(10),
+            permisosubirarchivo VARCHAR(10)
+        );
+        ALTER TABLE permiso ADD COLUMN rutaopcion VARCHAR(150) DEFAULT \'\';
+    </string>
+    <string name="dbConfig">
+        CREATE TABLE IF NOT EXISTS configuracion(
+            idconfiguracion INTEGER PRIMARY KEY AUTOINCREMENT,
+            urlbase VARCHAR(250),
+            ssl INTEGER DEFAULT 0,
+            maxfotoganadero INTEGER DEFAULT 3,
+            maxfotopropiedad INTEGER DEFAULT 3,
+            maxfotomascota INTEGER DEFAULT 3
+        );
+    </string>
+    <string name="dbReglaPrecio">
+        CREATE TABLE IF NOT EXISTS reglaprecio(
+            idproductoregla INTEGER PRIMARY KEY,
+            productoid INTEGER,
+            establecimientoid INTEGER,
+            cantidad DOUBLE,
+            numerolote VARCHAR(100),
+            fechamaxima VARCHAR(25),
+            precio DOUBLE
+        );
+        ALTER TABLE reglaprecio ADD COLUMN longdate INTEGER DEFAULT 0;
+    </string>
+
+    <string name="dbPrecioCategoria">
+        CREATE TABLE IF NOT EXISTS preciocategoria(
+            idproductocategoria INTEGER PRIMARY KEY,
+            productoid INTEGER,
+            establecimientoid INTEGER,
+            categoriaid INTEGER,
+            valor DOUBLE,
+            nombrecategoria VARCHAR(100),
+            prioridad VARCHAR(5),
+            aplicacredito VARCHAR(5)
+        );
+    </string>
+
+    <string name="dbProvincia">
+        CREATE TABLE IF NOT EXISTS provincia(
+            idprovincia integer,
+            nombreprovincia varchar(100),
+            CONSTRAINT ukprovincia UNIQUE(idprovincia)
+        );
+    </string>
+    <string name="dbCanton">
+        CREATE TABLE IF NOT EXISTS canton(
+            idcanton integer,
+            nombrecanton varchar(100),
+            provinciaid integer,
+            CONSTRAINT ukcanton UNIQUE(idcanton)
+        );
+    </string>
+    <string name="dbParroquia">
+        CREATE TABLE IF NOT EXISTS parroquia(
+            idparroquia integer,
+            nombreparroquia varchar(100),
+            cantonid integer,
+            CONSTRAINT ukparroquia UNIQUE(idparroquia)
+        );
+    </string>
+
+    <string name="dbPedidoInv">
+        CREATE TABLE IF NOT EXISTS pedidoinv(
+            idpedido INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigosistema INTEGER,
+            establecimientoid INTEGER,
+            usuarioid INTEGER,
+            diasabastecimiento INTEGER DEFAULT 7,
+            estadomovil INTEGER DEFAULT 0,
+            secuencial INTEGER,
+            codigopedido VARCHAR(50),
+            fecharegistro VARCHAR(25),
+            fechahora VARCHAR(25),
+            estado VARCHAR(2) DEFAULT \'P\',
+            observacion VARCHAR(250),
+            longdate INTEGER DEFAULT 0,
+            tipotransaccion VARCHAR(5),
+            CONSTRAINT uksecuencial UNIQUE(usuarioid, establecimientoid, codigopedido, estado)
+        );
+    </string>
+    <string name="dbDetallePedidoInv">
+        CREATE TABLE IF NOT EXISTS detallepedidoinv(
+            pedidoid INTEGER,
+            orden INTEGER,
+            productoid INTEGER,
+            cantidadpedida DOUBLE,
+            cantidadautorizada DOUBLE,
+            stockactual DOUBLE,
+            usuarioid INTEGER,
+            codigoproducto VARCHAR(100),
+            nombreproducto VARCHAR(250)
+        );
+    </string>
+
+    <string name="dbUbicacion">
+        CREATE TABLE IF NOT EXISTS ubicacion(
+            idubicacion INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuarioid INTEGER,
+            lat DOUBLE,
+            lon DOUBLE,
+            estado INTEGER DEFAULT 0,
+            fechaapp VARCHAR(25),
+            rucempresa VARCHAR(25)
+        );
+    </string>
+
+    <string name="dbCatalogo">
+        CREATE TABLE IF NOT EXISTS catalogo(
+            idcatalogo integer,
+            codigocatalogo varchar(50),
+            nombrecatalogo varchar(150),
+            codigopadre varchar(50),
+            CONSTRAINT ukcatalogo UNIQUE(codigocatalogo, codigopadre)
+        );
+    </string>
+    <string name="dbFichaGanadero">
+        CREATE TABLE IF NOT EXISTS fichaganadero(
+            idfichaganadero integer primary key autoincrement,
+            codigosistema integer,
+            ganaderoid integer,
+            fecha_visita varchar(20),
+            acceso_internet varchar(1),
+            lugar_compra_insumos text,
+            motivo_compra varchar(10),
+            tipo_alimentos_animales text,
+            lugar_compra_productos_consumo text,
+            lugar_recibe_atención_medica text,
+            lugar_compra_medicina text,
+            monto_atencion_medica double,
+            vision_familia text,
+            miembros_familiares integer,
+            CONSTRAINT ukfichaganadero UNIQUE (ganaderoid, fecha_visita)
+        );
+        ALTER TABLE fichaganadero ADD COLUMN usuarioid INTEGER;
+    </string>
+    <string name="dbPropiedad">
+        CREATE TABLE IF NOT EXISTS propiedad(
+            idpropiedad integer PRIMARY KEY AUTOINCREMENT,
+            codigosistema integer,
+            nombrepropiedad varchar(150),
+            propietarioid integer,
+            administradorid integer,
+            fecha_adquisicion varchar(20),
+            area double,
+            caracteristicas_fisograficas text,
+            descripcion_usos_suelo text,
+            condiciones_accesibilidad text,
+            caminos_principales text,
+            caminos_secundarios text,
+            fuentes_agua text,
+            norte varchar(200),
+            sur varchar(200),
+            este varchar(200),
+            oeste varchar(200),
+            cobertura_forestal varchar(100),
+            razas_ganado varchar(100),
+            num_vacas_paridas integer default 0,
+            num_vacas_preñadas integer default 0,
+            num_vacas_solteras integer default 0,
+            num_terneros integer default 0,
+            num_toros integer default 0,
+            num_equinos integer default 0,
+            num_aves integer default 0,
+            num_cerdos integer default 0,
+            num_mascotas integer default 0,
+            otros varchar(200),
+            actualizado integer,
+            parroquiaid integer
+        );
+        ALTER TABLE propiedad ADD COLUMN usuarioid INTEGER;
+        ALTER TABLE propiedad ADD COLUMN nip_administrador varchar(20) default \'\';
+        ALTER TABLE propiedad ADD COLUMN direccion text default \'\';
+        ALTER TABLE propiedad ADD COLUMN lat DOUBLE DEFAULT 0;
+        ALTER TABLE propiedad ADD COLUMN lon DOUBLE DEFAULT 0;
+        ALTER TABLE propiedad ADD COLUMN nip_propietario varchar(20) default \'\';
+    </string>
+    <string name="dbUsoSuelo">
+        CREATE TABLE IF NOT EXISTS usosuelo(
+            idusosuelo integer primary key autoincrement,
+            propiedadid integer,
+            tipo_cultivo varchar(50),
+            area_cultivo double,
+            variedad_sembrada varchar(150),
+            observacion text,
+            CONSTRAINT ukusosuelo UNIQUE(propiedadid,tipo_cultivo, area_cultivo)
+        );
+        ALTER TABLE usosuelo ADD COLUMN orden INTEGER;
+    </string>
+    <string name="dbFODA_Propiedad">
+        CREATE TABLE IF NOT EXISTS fodapropiedad(
+            idfoda integer primary key autoincrement,
+            ganaderoid integer,
+            propiedadid integer,
+            tipo integer,
+            descripcion text,
+            causas text,
+            solucion_1 text,
+            solucion_2 text,
+            observacion text,
+            CONSTRAINT ukfoda UNIQUE (ganaderoid,propiedadid,tipo,descripcion)
+        );
+        ALTER TABLE fodapropiedad ADD COLUMN fichaganaderoid INTEGER;
+    </string>
+    <string name="dbFotos">
+        CREATE TABLE IF NOT EXISTS foto(
+            idfoto integer primary key autoincrement,
+            ganaderoid integer,
+            propiedadid integer,
+            name text,
+            path text,
+            tipo varchar(1),
+            CONSTRAINT ukfoto UNIQUE (ganaderoid,propiedadid,tipo,name)
+        );
+    </string>
+    <string name="dbMascota">
+        CREATE TABLE IF NOT EXISTS mascota(
+            idmascota integer primary key autoincrement,
+            codigosistema integer,
+            duenoid integer,
+            nombre varchar(100),
+            fechacelular varchar(25),
+            fechanacimiento varchar(25),
+            especieid varchar(20),
+            razaid varchar(20),
+            color1 varchar(50),
+            color2 varchar(50),
+            peso double,
+            sexo varchar(1),
+            observacion text,
+            actualizado integer,
+            lat double,
+            lon double,
+            longdaten integer,
+            usuarioid integer,
+            nipdueno varchar(25),
+            CONSTRAINT ukmascota UNIQUE (duenoid, especieid,razaid,nombre, usuarioid, sexo)
+        );
+        ALTER TABLE mascota ADD COLUMN codigomascota VARCHAR(50) DEFAULT \'\';
+    </string>
+
+    <string name="dbConsulta">
+        CREATE TABLE IF NOT EXISTS consulta(
+            idconsulta INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigosistema INTEGER,
+            mascotaid INTEGER,
+            actualizado INTEGER,
+            usuarioid INTEGER,
+            codigoconsulta VARCHAR(50),
+            fechacelular VARCHAR(25),
+            fechaconsulta VARCHAR(25),
+            diagnostico TEXT,
+            receta TEXT,
+            prescripcion TEXT,
+            nombreusuario VARCHAR(100),
+            longdatec INTEGER,
+            lat DOUBLE,
+            lon DOUBLE,
+            CONSTRAINT ukconsulta UNIQUE (codigoconsulta, mascotaid)
+        );
+    </string>
+    <string name="dbMedicamento">
+        CREATE TABLE IF NOT EXISTS medicamento(
+            idmedicamento INTEGER PRIMARY KEY,
+            numfrecuencia INTEGER,
+            tipo VARCHAR(10),
+            nombre VARCHAR(50),
+            descripcion TEXT,
+            frecuencia VARCHAR(10),
+            CONSTRAINT ukmedicamento UNIQUE(idmedicamento)
+        );
+    </string>
+    <string name="dbMedicamentoMascota">
+        CREATE TABLE IF NOT EXISTS medicamentomascota(
+            idmedicamentomascota INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigosistema INTEGER,
+            mascotaid INTEGER,
+            actualizado INTEGER,
+            usuarioid INTEGER,
+            medicamentoid INTEGER,
+            tipo VARCHAR(10),
+            codigo VARCHAR(30),
+            fechacelular VARCHAR(30),
+            fechaaplicacion VARCHAR(30),
+            proximaaplicacion VARCHAR(30),
+            observacion TEXT,
+            nombreusuario VARCHAR(50),
+            longdate INTEGER,
+            lat DOUBLE,
+            lon DOUBLE,
+            CONSTRAINT ukmedicamento UNIQUE (codigo, mascotaid)
+        );
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="update"><![CDATA[<u>Actualizar</u>]]></string>
+    <string name="leyendaConsumidorFinal"><![CDATA[*Si no especifica el cliente, la factura se guardará con <strong>CONSUMIDOR FINAL</strong>]]></string>
+    <string name="Cancel">No</string>
+    <string name="Confirm">Si</string>
+
+    <string name="textFecha"><![CDATA[<strong>Fecha Registro: </strong>]]></string>
+    <string name="textCategoria"><![CDATA[<strong>Categoría: </strong>]]></string>
+    <string-array name="sexo">
+        <item>-Seleccione-</item>
+        <item>Macho</item>
+        <item>Hembra</item>
+    </string-array>
+</resources>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activities.DiagnosticoActivity">
+
+    <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="55dp"
+        android:orientation="vertical">
+
+
+        <!--INFORMACION PRINCIPAL-->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lblInfoPrincipal"
+                    style="@style/EstiloText_Black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:layout_marginVertical="8dp"
+                    android:drawableRight="@drawable/ic_row_up"
+                    android:drawablePadding="10dp"
+                    android:text="Información Principal"
+                    android:textColor="@color/colorDate"
+                    android:textSize="18sp" />
+                <!--INFORMACION PRINCIPAL DE LA MASCOTA Y DUEÑO-->
+                <LinearLayout
+                    android:id="@+id/lyInfoPrincipal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/lblInfoDetalle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:text="Nombre: Firulais\nDueño:Andrés"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!--HISTORIAL DE CONSULTAS, VACUNAS Y DESPARASITADAS-->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabOpciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorGreenLight"
+            app:tabIndicatorColor="@color/colorDate"
+            app:tabIndicatorHeight="3dp"
+            app:tabSelectedTextColor="@color/colorWhite"
+            app:tabTextColor="@color/colorBlue">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabConsulta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONSULTAS" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabVacuna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vacunas" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tabDesparasita"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Desparasitadas" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpTabContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
